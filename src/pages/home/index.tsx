@@ -1,23 +1,19 @@
 import React, { useEffect, useState } from 'react';
+import ApiService from '../../services/api';
 import { Container } from './styles';
 
-import {api, IToken, token} from './../../services/api';
 import { Lancamento } from './types';
-
-
 
 const Home: React.FC = () => {
 
-    const [tokenAuth, setTokenAuth] = useState<string>('');
     const [lancamentos, setLancamentos] = useState<Lancamento[]>([]); 
+    const apiService = new ApiService();
 
     useEffect(() => {
   
       (async () => {
-        const fetched: IToken = await (await token()).data;
-        setTokenAuth(`Bearer ${fetched.token}`);
-        const lancamentos = await api.get('/lancamentos', { headers: {'Authorization': `Bearer ${fetched.token}`} })
-        setLancamentos(lancamentos.data.itens); 
+        const fetched = await apiService.get('/lancamentos');
+        setLancamentos(fetched.data.itens);
       })();
   
     }, []);
